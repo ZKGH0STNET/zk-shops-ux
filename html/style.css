@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: transparent;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#inventory-wrapper {
+  width: 1000px;
+  height: 600px;
+  background-color: rgba(26, 38, 65, 0.213);
+  border: 1px solid rgba(51, 58, 70, 0.15);
+  border-radius: 2px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 400;
+  padding: 5px 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+#inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 2px;
+  justify-content: center;
+  margin-top: 10px;
+  flex: 1;
+}
+
+.item {
+  background-color: rgba(32, 56, 100, 0.25);
+  border: 1px solid rgba(100, 149, 237, 0.15);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.1s;
+  height: 100px;
+  width: 100%;
+}
+
+.item:hover {
+  background-color: rgba(41, 73, 128, 0.4);
+  border-color: rgba(100, 149, 237, 0.3);
+  transform: scale(1.02);
+}
+
+.item img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 5px;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7));
+}
+
+.item .name {
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.item .quantity {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 11px;
+  color: #fff;
+  background-color: rgba(30, 62, 120, 0.6);
+  padding: 1px 4px;
+  border-radius: 2px;
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(100, 149, 237, 0.2);
+}
+
+.item .price {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 11px;
+  color: #8bc34a;
+  background-color: rgba(30, 62, 120, 0.6);
+  padding: 1px 4px;
+  border-radius: 2px;
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(100, 149, 237, 0.2);
+}
+
+.hidden {
+  display: none;
+}

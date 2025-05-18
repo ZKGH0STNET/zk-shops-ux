@@ -1,4 +1,5 @@
 local creandoTienda = false
+local QBCore = exports['qb-core']:GetCoreObject()
 local tiendasRegistradas = {}
 local tiendaTextUIActive = false
 local tiendaTextUIZone = nil
@@ -234,47 +235,73 @@ RegisterNetEvent("tienda:abrirEditorItems", function(shopName)
     end
 end)
 
+-- Este evento ya no es necesario ya que usamos ox_inventory directamente
+-- Lo mantenemos solo para compatibilidad pero está vacío
 RegisterNetEvent("tienda:mostrarMenuTienda", function(tienda)
-    print("[DEBUG] Recibido tienda para mostrar menú:", json.encode(tienda))
-    local options = {}
+    -- Ahora la tienda se abre directamente desde el servidor usando ox_inventory
+    print("[DEBUG] Este evento ya no se utiliza, la tienda se abre mediante ox_inventory")
+end)
 
-    if not tienda.items or #tienda.items == 0 then
-        table.insert(options, { title = "Sin productos", description = "Esta tienda no tiene productos aún.", icon = "ban" })
-    else
-        for _, item in ipairs(tienda.items) do
-            table.insert(options, {
-                title = item.label or item.name or "Item",
-                description = "Cantidad: " .. (item.amount or 1) .. " | Precio: $" .. (item.price or 0),
-                icon = "box",
-                image = "nui://ox_inventory/web/images/" .. item.name .. ".png",
-                onSelect = function()
-                    local cantidad = lib.inputDialog('Comprar ' .. (item.label or item.name), {
-                        {type = 'number', label = 'Cantidad a comprar', required = true, min = 1, max = item.amount or 1}
-                    })
-                    if cantidad and cantidad[1] and cantidad[1] > 0 then
-                        local precio = item.price or 0
-                        local totalPrecio = precio * cantidad[1]
-                        local confirm = lib.alertDialog({
-                            header = 'Confirmar compra',
-                            content = ('¿Comprar %sx %s por $%s?'):format(cantidad[1], item.label or item.name, totalPrecio),
-                            centered = true,
-                            cancel = true
-                        })
-                        if confirm == 'confirm' then
-                            TriggerServerEvent("tienda:comprarItem", tienda.name, item.name, cantidad[1], precio)
-                        end
-                    end
-                end
-            })
-        end
+-- Variable para rastrear si la interfaz de la tienda está abierta
+local shopOpen = false
+local currentShopName = nil
+
+-- Evento para abrir una tienda con nuestra interfaz estilo ox_inventory
+RegisterNetEvent('zk-shops:openShopInventory', function(shopName, shopData)
+    print("[DEBUG] Abriendo tienda con interfaz ox_inventory: " .. shopName)
+    
+    -- Si ya hay una tienda abierta, no abrir otra
+    if shopOpen then return end
+    
+    -- Guardar el nombre de la tienda actual
+    currentShopName = shopName
+    
+    -- Preparar los items con el formato correcto
+    local formattedItems = {}
+    for i, item in ipairs(shopData.items) do
+        table.insert(formattedItems, {
+            name = item.name,
+            label = item.label or item.name,
+            amount = tonumber(item.amount) or 1,
+            price = tonumber(item.price) or 0,
+            image = "nui://ox_inventory/web/images/" .. item.name .. ".png"
+        })
     end
-
-    lib.registerContext({
-        id = 'menu_tienda_' .. tienda.name,
-        title = 'Tienda: ' .. tienda.name,
-        options = options
+    
+    -- Mostrar la interfaz NUI y enviar los datos de la tienda
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'open',
+        shop = {
+            name = shopData.name
+        },
+        items = formattedItems
     })
-    lib.showContext('menu_tienda_' .. tienda.name)
+    
+    shopOpen = true
+end)
+
+-- Callback para cerrar la tienda desde NUI
+RegisterNUICallback('closeShop', function(data, cb)
+    SetNuiFocus(false, false)
+    shopOpen = false
+    currentShopName = nil
+    cb('ok')
+end)
+
+-- Callback para comprar un item desde NUI
+RegisterNUICallback('purchaseItem', function(data, cb)
+    if data and data.item and data.quantity and data.price then
+        -- Llamar al evento del servidor para realizar la compra
+        TriggerServerEvent('tienda:comprarItem', currentShopName, data.item, data.quantity, data.price)
+    else
+        lib.notify({
+            title = 'Error',
+            description = 'Datos de compra incompletos',
+            type = 'error'
+        })
+    end
+    cb('ok')
 end)
 
 CreateThread(function()
