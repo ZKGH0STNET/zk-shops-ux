@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>ZK Custom Shop</title>
+</head>
+<body>
+    <div id="main-container">
+        <div id="shop-interface">
+            <div class="shop-header">
+                <div class="shop-title">
+                    <i class="fas fa-store"></i>
+                    <span id="shop-name">Tienda</span>
+                </div>
+                <div class="shop-stats">
+                    <div class="player-money">
+                        <i class="fas fa-money-bill"></i>
+                        <span id="player-money">$0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="shop-body">
+                <div id="items-grid" class="items-grid">
+                    <!-- Items will be generated here -->
+                </div>
+            </div>
+            
+            <div class="shop-footer">
+                <div class="shop-instructions">
+                    <span>Click en un item para comprarlo</span>
+                </div>
+                <div class="shop-controls">
+                    <button id="close-shop" class="shop-button">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase dialog -->
+        <div id="purchase-dialog" class="dialog hidden">
+            <div class="dialog-content">
+                <div class="dialog-header">
+                    <span id="purchase-item-name">Item Name</span>
+                    <i class="fas fa-times dialog-close" id="close-dialog"></i>
+                </div>
+                <div class="dialog-body">
+                    <div class="item-info">
+                        <img id="purchase-item-image" src="">
+                        <div class="item-details">
+                            <div class="item-price">
+                                <span>Precio:</span>
+                                <span id="purchase-item-price">$0</span>
+                            </div>
+                            <div class="item-available">
+                                <span>Disponible:</span>
+                                <span id="purchase-item-available">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quantity-selector">
+                        <span>Cantidad:</span>
+                        <div class="quantity-controls">
+                            <button id="decrease-quantity" class="quantity-button">-</button>
+                            <input type="number" id="purchase-quantity" min="1" value="1">
+                            <button id="increase-quantity" class="quantity-button">+</button>
+                        </div>
+                    </div>
+                    <div class="total-price">
+                        <span>Total:</span>
+                        <span id="purchase-total-price">$0</span>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button id="cancel-purchase" class="dialog-button cancel">Cancelar</button>
+                    <button id="confirm-purchase" class="dialog-button confirm">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

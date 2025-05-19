@@ -1,30 +1,63 @@
 fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
+name 'zk-shop-ux'
+author 'ZK-GHOST'
+description 'Advanced shop system with ox_inventory-like UI'
+version '2.0.0'
 
--- Asegúrate de tener ox_lib y oxmysql como dependencias
+-- Dependencies
 dependency 'ox_lib'
 dependency 'oxmysql'
 dependency 'qb-core'
 
-shared_script '@ox_lib/init.lua'
+-- Shared scripts
+shared_scripts {
+    '@ox_lib/init.lua',
+    'config.lua'
+}
 
+-- Client scripts
 client_scripts {
-    'client.lua',
-    'bossmenu.lua'
+    'client/main.lua',
+    'client/ui.lua',
+    'client/zones.lua',
+    'client/commands.lua',
+    'client/bossmenu.lua',
+    'client/teleport.lua',
+    'client/boss_commands.lua'
 }
 
+-- Server scripts
 server_scripts {
-    '@oxmysql/lib/MySQL.lua', -- Asegura que oxmysql esté cargado antes
-    'server.lua',
-    'bossmenu.lua'
+    '@oxmysql/lib/MySQL.lua',
+    'server/main.lua',
+    'server/database.lua',
+    'server/discord.lua',
+    'server/bossmenu.lua',
+    'server/boss_commands.lua',
+    'server/dbcheck.lua'
 }
+
+-- UI resources
+ui_page 'web/index.html'
 
 files {
-    'config.lua',
-    'html/index.html',
-    'html/style.css',
-    'html/script.js'
+    'web/index.html',
+    'web/style.css',
+    'web/script.js',
+    'web/images/*.png'
 }
 
-ui_page 'html/index.html'
+-- Make sure data gets reset on resource restart
+server_exports {
+    'getShopData',
+    'createShop',
+    'deleteShop',
+    'updateShopItems'
+}
+
+-- Client exports
+client_exports {
+    'OpenShopBossMenu'
+}
